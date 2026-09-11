@@ -1,5 +1,21 @@
+
+
+
 package com.example.myapplication;
 
+
+/**
+ * DatabaseHelper - SQLite database for Smart Pantry Manager
+
+ * Tables:
+ * - pantry: user's ingredients (name, quantity, unit, expiry)
+ * - recipes: recipe names and steps
+ * - recipe_ingredients: links ingredients to recipes
+ 
+ * Key feature: getSuggestedRecipes() implements strict-matching
+ * A recipe is only suggested if ALL its ingredients are in the pantry
+ * with at least the required quantity.
+ */
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
