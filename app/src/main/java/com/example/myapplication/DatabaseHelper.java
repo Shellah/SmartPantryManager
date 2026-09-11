@@ -411,6 +411,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
+     * Returns recipes that are missing exactly ONE ingredient from the pantry.
+     * Used for the optional "Almost There" bonus list (Section 2.3 of the brief).
+     * These are NOT strict matches and are shown in a clearly separate section.
+     */
+    public List<Recipe> getAlmostThereRecipes(List<PantryItem> pantryItems) {
+        List<Recipe> almost = new ArrayList<>();
+        List<Recipe> allRecipes = getAllRecipes();
+
+        for (Recipe recipe : allRecipes) {
+            int missing = countMissingIngredients(recipe, pantryItems);
+            if (missing == 1) {
+                almost.add(recipe);
+            }
+        }
+        return almost;
+    }
+
+    private int countMissingIngredients(Recipe recipe, List<PantryItem> pantryItems) {
+        int missing = 0;
+        for (RecipeIngredient required : recipe.getIngredients()) {
+            boolean found = false;
+            for (PantryItem pantry : pantryItems) {
+                if (namesMatch(pantry.getName(), required.getName())
+                        && pantry.getQuantity() >= required.getQuantity()) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) missing++;
+        }
+        return missing;
+    }
+
+    /**
      * Normalizes ingredient names so that trivial real-world differences
      * (case, whitespace, singular/plural) don't break strict matching.
      * Examples that now match: "Tomato" / "tomatoes", "Onion" / "onions ".
