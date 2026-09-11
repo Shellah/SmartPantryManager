@@ -1,32 +1,30 @@
-\# Smart Pantry Manager
+ Smart Pantry Manager
 
 
 
 An Android app built in Java that helps users reduce food waste by tracking pantry ingredients and suggesting recipes they can cook with what they already have.
 
 
-
-\## Features
-
-
-
-\- \*\*Pantry Management\*\*: Add, edit, and delete ingredients with quantity, unit, and expiry date
-
-\- \*\*Strict Recipe Matching\*\*: Only shows recipes where ALL ingredients are in your pantry
-
-\- \*\*15+ Pre-loaded Recipes\*\*: Includes Omelette, Grilled Cheese, Pasta, and more
-
-\- \*\*Recipe Details\*\*: Full ingredient list and preparation steps
-
-\- \*\*Settings\*\*: Toggle expiry alerts and unit preferences
+ Features
 
 
 
-\## Database
+\- \*Pantry Management\*: Add, edit, and delete ingredients with quantity, unit, and expiry date
+
+\- \*Strict Recipe Matching\*: Only shows recipes where ALL ingredients are in your pantry
+
+\- \*15+ Pre-loaded Recipes\*: Includes Omelette, Grilled Cheese, Pasta, and more
+
+\- \*Recipe Details\*: Full ingredient list and preparation steps
+
+\- \*Settings\*: Toggle expiry alerts and unit preferences
 
 
 
-This app uses \*\*SQLite\*\* (via SQLiteOpenHelper) for local on-device storage because:
+ Database
+
+
+This app uses \*SQLite\* (via SQLiteOpenHelper) for local on-device storage because:
 
 \- No internet required
 
@@ -38,23 +36,23 @@ This app uses \*\*SQLite\*\* (via SQLiteOpenHelper) for local on-device storage 
 
 
 
-\## Screens
+Screens
 
 
 
-1\. \*\*Pantry List\*\* - View all ingredients in a RecyclerView
+1\. \*Pantry List\* - View all ingredients in a RecyclerView
 
-2\. \*\*Add/Edit Ingredient\*\* - Form with validation
+2\. \*Add/Edit Ingredient\* - Form with validation
 
-3\. \*\*Suggested Recipes\*\* - Strict-matching recipe list
+3\. \*Suggested Recipes\* - Strict-matching recipe list
 
-4\. \*\*Recipe Detail\*\* - Full recipe with steps
+4\. \*Recipe Detail\* - Full recipe with steps
 
-5\. \*\*Settings\*\* - User preferences
+5\. \*Settings\*\* - User preferences
 
 
 
-\## How to Run
+ How to Run
 
 
 
@@ -67,10 +65,7 @@ This app uses \*\*SQLite\*\* (via SQLiteOpenHelper) for local on-device storage 
 4\. The app seeds test data on first launch
 
 
-
-\## Author
-
-
+ Author
 
 Shellah Gwenzi
 
