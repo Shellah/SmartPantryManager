@@ -1,4 +1,7 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-plugins {
-    alias(libs.plugins.android.application) apply false
-}
+<resources>
+        <string name="app_name">Smart Pantry Manager</string>
+    <string name="app_description">Reduce food waste by tracking your ingredients!</string>
+<string name="open_pantry">Open My Pantry</string>
+    <string name="my_pantry">My Pantry</string>
+        <string name="add_ingredient">Add New Ingredient</string>
+</resources>
