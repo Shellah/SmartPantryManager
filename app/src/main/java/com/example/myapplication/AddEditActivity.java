@@ -2,18 +2,26 @@ package com.example.myapplication;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 public class AddEditActivity extends AppCompatActivity {
 
-    private EditText etName, etQuantity, etUnit, etExpiry;
+    private EditText etName, etQuantity, etExpiry;
+    private Spinner spinnerUnit;
     private Button btnSave;
     private DatabaseHelper dbHelper;
     private int editId = -1;
+
+    // Units available in the dropdown
+    private static final String[] UNITS = {
+            "unit", "g", "kg", "ml", "l", "tbsp", "tsp", "pinch", "cloves", "slices", "packet"
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,17 +32,28 @@ public class AddEditActivity extends AppCompatActivity {
 
         etName = findViewById(R.id.etName);
         etQuantity = findViewById(R.id.etQuantity);
-        etUnit = findViewById(R.id.etUnit);
+        spinnerUnit = findViewById(R.id.spinnerUnit);
         etExpiry = findViewById(R.id.etExpiry);
         btnSave = findViewById(R.id.btnSave);
+
+        // Populate the unit spinner
+        ArrayAdapter<String> unitAdapter = new ArrayAdapter<>(
+                this, android.R.layout.simple_spinner_item, UNITS);
+        unitAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerUnit.setAdapter(unitAdapter);
 
         // If editing an existing item, populate fields
         editId = getIntent().getIntExtra("item_id", -1);
         if (editId != -1) {
             etName.setText(getIntent().getStringExtra("item_name"));
             etQuantity.setText(String.valueOf(getIntent().getIntExtra("item_quantity", 0)));
-            etUnit.setText(getIntent().getStringExtra("item_unit"));
             etExpiry.setText(getIntent().getStringExtra("item_expiry"));
+
+            String existingUnit = getIntent().getStringExtra("item_unit");
+            if (existingUnit != null) {
+                int index = unitAdapter.getPosition(existingUnit);
+                if (index >= 0) spinnerUnit.setSelection(index);
+            }
         }
 
         btnSave.setOnClickListener(v -> saveItem());
@@ -47,7 +66,9 @@ public class AddEditActivity extends AppCompatActivity {
     private void saveItem() {
         String name = etName.getText().toString().trim();
         String qtyStr = etQuantity.getText().toString().trim();
-        String unit = etUnit.getText().toString().trim();
+        String unit = spinnerUnit.getSelectedItem() != null
+                ? spinnerUnit.getSelectedItem().toString()
+                : "unit";
         String expiry = etExpiry.getText().toString().trim();
 
         // Validation: name
@@ -80,11 +101,6 @@ public class AddEditActivity extends AppCompatActivity {
             etQuantity.setError("Quantity must be greater than 0");
             etQuantity.requestFocus();
             return;
-        }
-
-        // Validation: unit (optional but sanitise)
-        if (TextUtils.isEmpty(unit)) {
-            unit = "unit";
         }
 
         // Save
