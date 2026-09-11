@@ -1,16 +1,5 @@
 package com.example.myapplication;
 
-
-/**
- * PantryAdapter - RecyclerView adapter for pantry items
- * Binds PantryItem data to item_pantry.xml layout
- * Handles Edit and Delete button clicks
- */
-
-import android.view.LayoutInflater;
-import android.view.View;
-...
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +11,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+/**
+ * PantryAdapter - RecyclerView adapter for pantry items.
+ * Binds PantryItem data to item_pantry.xml layout.
+ * Handles Edit and Delete button clicks via OnItemClickListener.
+ */
 public class PantryAdapter extends RecyclerView.Adapter<PantryAdapter.PantryViewHolder> {
 
     private List<PantryItem> pantryItems;
@@ -50,9 +44,12 @@ public class PantryAdapter extends RecyclerView.Adapter<PantryAdapter.PantryView
         PantryItem item = pantryItems.get(position);
 
         holder.tvItemName.setText(item.getName());
-        holder.tvItemDetails.setText(item.getQuantity() + " " + item.getUnit()
-                + (item.getExpiryDate() != null && !item.getExpiryDate().isEmpty()
-                ? " • Expires: " + item.getExpiryDate() : ""));
+
+        String details = item.getQuantity() + " " + item.getUnit();
+        if (item.getExpiryDate() != null && !item.getExpiryDate().isEmpty()) {
+            details += " - Expires: " + item.getExpiryDate();
+        }
+        holder.tvItemDetails.setText(details);
 
         holder.btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
