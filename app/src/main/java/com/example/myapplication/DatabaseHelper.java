@@ -11,7 +11,7 @@ package com.example.myapplication;
  * - pantry: user's ingredients (name, quantity, unit, expiry)
  * - recipes: recipe names and steps
  * - recipe_ingredients: links ingredients to recipes
- 
+
  * Key feature: getSuggestedRecipes() implements strict-matching
  * A recipe is only suggested if ALL its ingredients are in the pantry
  * with at least the required quantity.

@@ -1,5 +1,16 @@
 package com.example.myapplication;
 
+
+/**
+ * PantryAdapter - RecyclerView adapter for pantry items
+ * Binds PantryItem data to item_pantry.xml layout
+ * Handles Edit and Delete button clicks
+ */
+
+import android.view.LayoutInflater;
+import android.view.View;
+...
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
