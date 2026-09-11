@@ -1,21 +1,5 @@
-
-
-
 package com.example.myapplication;
 
-
-/**
- * DatabaseHelper - SQLite database for Smart Pantry Manager
-
- * Tables:
- * - pantry: user's ingredients (name, quantity, unit, expiry)
- * - recipes: recipe names and steps
- * - recipe_ingredients: links ingredients to recipes
-
- * Key feature: getSuggestedRecipes() implements strict-matching
- * A recipe is only suggested if ALL its ingredients are in the pantry
- * with at least the required quantity.
- */
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -24,6 +8,18 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * DatabaseHelper - SQLite database for Smart Pantry Manager
+ *
+ * Tables:
+ * - pantry: user's ingredients (name, quantity, unit, expiry)
+ * - recipes: recipe names and steps
+ * - recipe_ingredients: links ingredients to recipes
+ *
+ * Key feature: getSuggestedRecipes() implements strict-matching
+ * A recipe is only suggested if ALL its ingredients are in the pantry
+ * with at least the required quantity.
+ */
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "SmartPantry.db";
@@ -213,6 +209,44 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         addRecipeIngredient(db, recipe15Id, "Banana", 1, "unit");
         addRecipeIngredient(db, recipe15Id, "Honey", 1, "tbsp");
         addRecipeIngredient(db, recipe15Id, "Strawberries", 50, "g");
+
+        // Recipe 16: Cheese Toastie
+        long recipe16Id = db.insert(TABLE_RECIPES, null, createRecipeValues("Cheese Toastie",
+                "1. Butter bread\n2. Add cheese\n3. Toast until melted"));
+        addRecipeIngredient(db, recipe16Id, "Bread", 2, "slices");
+        addRecipeIngredient(db, recipe16Id, "Cheese", 40, "g");
+        addRecipeIngredient(db, recipe16Id, "Butter", 5, "g");
+
+        // Recipe 17: Scrambled Eggs
+        long recipe17Id = db.insert(TABLE_RECIPES, null, createRecipeValues("Scrambled Eggs",
+                "1. Beat eggs\n2. Cook in pan with butter\n3. Stir continuously\n4. Season and serve"));
+        addRecipeIngredient(db, recipe17Id, "Eggs", 2, "unit");
+        addRecipeIngredient(db, recipe17Id, "Butter", 10, "g");
+        addRecipeIngredient(db, recipe17Id, "Salt", 1, "pinch");
+        addRecipeIngredient(db, recipe17Id, "Pepper", 1, "pinch");
+
+        // Recipe 18: Banana Milkshake
+        long recipe18Id = db.insert(TABLE_RECIPES, null, createRecipeValues("Banana Milkshake",
+                "1. Blend banana and milk\n2. Add sugar\n3. Blend until smooth\n4. Serve cold"));
+        addRecipeIngredient(db, recipe18Id, "Banana", 1, "unit");
+        addRecipeIngredient(db, recipe18Id, "Milk", 250, "ml");
+        addRecipeIngredient(db, recipe18Id, "Sugar", 1, "tbsp");
+
+        // Recipe 19: Tomato Pasta
+        long recipe19Id = db.insert(TABLE_RECIPES, null, createRecipeValues("Tomato Pasta",
+                "1. Cook pasta\n2. Fry onion and garlic\n3. Add tomato sauce\n4. Mix and serve"));
+        addRecipeIngredient(db, recipe19Id, "Pasta", 200, "g");
+        addRecipeIngredient(db, recipe19Id, "Tomato Sauce", 300, "ml");
+        addRecipeIngredient(db, recipe19Id, "Onion", 1, "unit");
+        addRecipeIngredient(db, recipe19Id, "Garlic", 1, "cloves");
+
+        // Recipe 20: Simple Salad
+        long recipe20Id = db.insert(TABLE_RECIPES, null, createRecipeValues("Simple Salad",
+                "1. Chop lettuce and tomato\n2. Add cucumber\n3. Drizzle olive oil\n4. Toss and serve"));
+        addRecipeIngredient(db, recipe20Id, "Lettuce", 1, "unit");
+        addRecipeIngredient(db, recipe20Id, "Tomato", 1, "unit");
+        addRecipeIngredient(db, recipe20Id, "Cucumber", 1, "unit");
+        addRecipeIngredient(db, recipe20Id, "Olive Oil", 1, "tbsp");
     }
 
     private ContentValues createRecipeValues(String name, String steps) {
@@ -362,7 +396,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         for (RecipeIngredient required : requiredIngredients) {
             boolean found = false;
             for (PantryItem pantry : pantryItems) {
-                if (pantry.getName().equalsIgnoreCase(required.getName().trim())) {
+                if (namesMatch(pantry.getName(), required.getName())) {
                     if (pantry.getQuantity() >= required.getQuantity()) {
                         found = true;
                         break;
@@ -374,5 +408,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
         }
         return true;
+    }
+
+    /**
+     * Normalizes ingredient names so that trivial real-world differences
+     * (case, whitespace, singular/plural) don't break strict matching.
+     * Examples that now match: "Tomato" / "tomatoes", "Onion" / "onions ".
+     */
+    private boolean namesMatch(String pantryName, String recipeName) {
+        return normalize(pantryName).equals(normalize(recipeName));
+    }
+
+    private String normalize(String name) {
+        if (name == null) return "";
+        String s = name.toLowerCase().trim();
+        // strip trailing punctuation
+        s = s.replaceAll("[.,;:!]+$", "");
+        // very simple singular/plural handling
+        if (s.endsWith("ies") && s.length() > 3) {
+            s = s.substring(0, s.length() - 3) + "y";   // berries -> berry
+        } else if (s.endsWith("es") && s.length() > 2) {
+            s = s.substring(0, s.length() - 2);          // tomatoes -> tomato
+        } else if (s.endsWith("s") && s.length() > 1) {
+            s = s.substring(0, s.length() - 1);          // onions -> onion
+        }
+        return s;
     }
 }
